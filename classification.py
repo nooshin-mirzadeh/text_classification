@@ -24,6 +24,21 @@ def loadTrainData(fn, emotion):
 
 
 
+def build_word_vector_matrix(vector_file, n_words):
+  '''Read a GloVe array from sys.argv[1] and return its vectors and labels as arrays'''
+  numpy_arrays = []
+  labels_array = []
+  with codecs.open(vector_file, 'r', 'utf-8') as f:
+    for c, r in enumerate(f):
+      sr = r.split()
+      labels_array.append(sr[0])
+      numpy_arrays.append( numpy.array([float(i) for i in sr[1:]]) )
+
+      if c == n_words:
+        return numpy.array( numpy_arrays ), labels_array
+  
+  return numpy.array( numpy_arrays ), labels_array
+
 # feature extraction
 
 ## Averaging word vectors for all words in a text
@@ -82,14 +97,12 @@ def main():
   y = np.concatenate((y1, y2), axis=0)
   print(X,y)
 
-  with open('') as lines:
-    w2v = {line.split()[0]: np.array(map(float, line.split()[1:]))
-            for line in lines}
+  w2v = build_word_vector_matrix('', 1000000000)
   
-  print(w2v)
+  #print(w2v)
 
 
-  mult_nb = Pipeline([("count_vectorizer", CountVectorizer(analyzer=lambda x: x)), ("multinomial nb", MultinomialNB())])
+  mult_nb = Pipeline([ ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("multinomial nb", MultinomialNB())])
 
   etree_w2v = Pipeline([
     ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
