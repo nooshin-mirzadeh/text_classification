@@ -36,17 +36,22 @@ def transform(w2v, dim, X):
 
 
 def main():
-	
 	#load pos and neg data
+  print('loading pos data...')
 	X1, y1 = loadTrainData('twitter-datasets/train_pos_full.txt','1')
+  print('loading neg data...')
 	X2,y2 = loadTrainData('twitter-datasets/train_neg_full.txt','-1')
 	X = np.concatenate((X1, X2), axis=0)
-  	y = np.concatenate((y1, y2), axis=0)
+  y = np.concatenate((y1, y2), axis=0)
 	
+  print('building the w2v...')
 	#build bag of the word
 	w2v = build_word_vector_matrix('./GloVe/res_full/vectors50.txt', 1000000000)
 
+  print('Creating the bag of words...')
 	bag_of_words = transform(w2v, 50, X)
+  print('Saving the data...')
+  np.save('results_full/bagOfWord', X)
 	
 if __name__ == '__main__':
     main()
