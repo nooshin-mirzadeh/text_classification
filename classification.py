@@ -84,6 +84,13 @@ class TfidfEmbeddingVectorizer(object):
             for words in X
         ])
 
+def models(w2v):
+  mult_nb = Pipeline([ ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("multinomial nb", MultinomialNB())])
+  bern_nb = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("bernoli nb", BernoulliNB())])
+  svc = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("linear svc", SVC(kernel="linear"))])
+  #mult_nb_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ('tfidf', TfidfTransformer()), ("linear svc", SVC(kernel="linear"))])
+  
+
 def main():
   
   X1, y1 = loadTrainData('twitter-datasets/train_pos_full.txt','1')
@@ -102,27 +109,31 @@ def main():
   
   #print(w2v)
 
-
+  
   mult_nb = Pipeline([ ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("multinomial nb", MultinomialNB())])
-  #bern_nb = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("bernoli nb", BernoulliNB())])
+  bern_nb = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("bernoli nb", BernoulliNB())])
   svc = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("linear svc", SVC(kernel="linear"))])
-  etree_w2v = Pipeline([
-    ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
-    ("extra trees", ExtraTreesClassifier(n_estimators=200))])
+  #etree_w2v = Pipeline([
+  #  ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+  #  ("extra trees", ExtraTreesClassifier(n_estimators=200))])
   
 
-  etree_w2v_tfidf = Pipeline([
-    ("word2vex vectorizer", TfidfEmbeddingVectorizer(w2v)),
-    ("extra tress", ExtraTreesClassifier(n_estimators=200))])
+  #etree_w2v_tfidf = Pipeline([
+  #  ("word2vex vectorizer", TfidfEmbeddingVectorizer(w2v)),
+  #  ("extra tress", ExtraTreesClassifier(n_estimators=200))])
   
-  score = cross_val_score(etree_w2v, X, y, cv=5).mean()
+  svc.fit(X, y)
+  s1 = pickle.dumps(svc, 'svc.pkl')
+  
+  mult_nb.fit(X, y)
+  s2 = pickle.dumps(mult_nb, 'mult_nb.pkl')
+
+  bern_nb.fit(X, y)
+  s3 = pickle.dumps(bern_nb, 'bern_nb.pkl')
+
+  score = cross_val_score(svc, X, y, cv=5).mean()
   print(score)
 
-  score2 = cross_val_score(mult_nb, X, y, cv=5).mean()
-  print(score2)
-  
-  score3 = cross_val_score(svc, X, y, cv=5).mean()
-  print(score3)
 if __name__ == '__main__':
     main()
 
