@@ -8,17 +8,17 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import cross_val_score
-
+import codecs
 
 # train pos data
 def loadTrainData(fn, emotion):
   X, y = [], []
   with open(fn) as infile:
     for line in infile:
-      text = line.split('\t')
-      X.append(text.split())
+      text = line.split()
+      X.append(text)
   X = np.array(X)
-  y = np.full(X.shape, emotion, dtype=string)
+  y = np.full(X.shape, emotion)
   print(X.shape)
   return X, y
 
@@ -32,12 +32,12 @@ def build_word_vector_matrix(vector_file, n_words):
     for c, r in enumerate(f):
       sr = r.split()
       labels_array.append(sr[0])
-      numpy_arrays.append( numpy.array([float(i) for i in sr[1:]]) )
+      numpy_arrays.append( np.array([float(i) for i in sr[1:]]) )
 
       if c == n_words:
-        return numpy.array( numpy_arrays ), labels_array
+        return np.array( numpy_arrays ), labels_array
   
-  return numpy.array( numpy_arrays ), labels_array
+  return np.array( numpy_arrays ), labels_array
 
 # feature extraction
 
@@ -45,8 +45,8 @@ def build_word_vector_matrix(vector_file, n_words):
 class MeanEmbeddingVectorizer(object):
   def __init__(self, word2vec):
     self.word2vec = word2vec
-    self.dim = word2vec.shape
-
+    #self.dim = np.array(word2vec).shape
+    self.dim = 50
   def fit(self, X, y):
     return self
 
@@ -63,7 +63,8 @@ class TfidfEmbeddingVectorizer(object):
   def __init__(self, word2vec):
     self.word2vec = word2vec
     self.word2weight = None
-    self.dim = word2vec.shape
+    #self.dim = np.array(word2vec).shape
+    self.dim = 50
 
   def fit(self, X, y):
     tfidf = TfidfVectorizer(analyzer=lambda x: x)
@@ -85,25 +86,26 @@ class TfidfEmbeddingVectorizer(object):
 
 def main():
   
-  X1, y1 = loadTrainData('twitter-datasets/train_pos.txt','1')
-  print(X1)
-  print(y1)
+  X1, y1 = loadTrainData('twitter-datasets/train_pos_full.txt','1')
+  #print(X1)
+  #print(y1)
   
-  X2,y2 = loadTrainData('twitter-datasets/train_neg.txt','-1')
-  print(X2)
-  print(y2)
+  X2,y2 = loadTrainData('twitter-datasets/train_neg_full.txt','-1')
+  #print(X2)
+  #print(y2)
 
   X = np.concatenate((X1, X2), axis=0)
   y = np.concatenate((y1, y2), axis=0)
-  print(X,y)
+  #print(X,y)
 
-  w2v = build_word_vector_matrix('', 1000000000)
+  w2v = build_word_vector_matrix('./GloVe/res_full/vectors50.txt', 1000000000)
   
   #print(w2v)
 
 
   mult_nb = Pipeline([ ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("multinomial nb", MultinomialNB())])
-
+  #bern_nb = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("bernoli nb", BernoulliNB())])
+  svc = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("linear svc", SVC(kernel="linear"))])
   etree_w2v = Pipeline([
     ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
     ("extra trees", ExtraTreesClassifier(n_estimators=200))])
@@ -118,7 +120,9 @@ def main():
 
   score2 = cross_val_score(mult_nb, X, y, cv=5).mean()
   print(score2)
-    
+  
+  score3 = cross_val_score(svc, X, y, cv=5).mean()
+  print(score3)
 if __name__ == '__main__':
     main()
 
