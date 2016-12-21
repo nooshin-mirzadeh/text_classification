@@ -12,14 +12,15 @@ from sklearn.cross_validation import cross_val_score
 
 # train pos data
 def loadTrainData(fn, emotion):
-  x_in, y_lable = [], []
-  with open(fn) as f:
-    for line in f:
-      x_in.append(line)
-  x_in = np.array(x_in)
-  y = np.full(x_in.shape, emotion)
-  print(x_in.shape)
-  return x_in, y
+  X, y = [], []
+  with open(fn) as infile:
+    for line in infile:
+      text = line.split('\t')
+      X.append(text.split())
+  X = np.array(X)
+  y = np.full(X.shape, emotion, dtype=string)
+  print(X.shape)
+  return X, y
 
 
 
@@ -81,9 +82,14 @@ def main():
   y = np.concatenate((y1, y2), axis=0)
   print(X,y)
 
-  w2v = np.load('results/embeddings.npy')
+  with open('') as lines:
+    w2v = {line.split()[0]: np.array(map(float, line.split()[1:]))
+            for line in lines}
   
   print(w2v)
+
+
+  mult_nb = Pipeline([("count_vectorizer", CountVectorizer(analyzer=lambda x: x)), ("multinomial nb", MultinomialNB())])
 
   etree_w2v = Pipeline([
     ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
@@ -96,6 +102,9 @@ def main():
   
   score = cross_val_score(etree_w2v, X, y, cv=5).mean()
   print(score)
+
+  score2 = cross_val_score(mult_nb, X, y, cv=5).mean()
+  print(score2)
     
 if __name__ == '__main__':
     main()
