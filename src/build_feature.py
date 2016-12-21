@@ -32,15 +32,7 @@ def loadTrainData(fn, emotion):
   return X, y
 
 def transform(w2v, dim, X):
-	#bag = []
-	#for words in X:
-	#	t = [np.mean([w2v[w] for w in words if w in w2v])]
-		#print(t)
-	#	bag.append(t)
-	
-	#return np.array(bag)
-			
-	#print(w2v['<user>'])
+	''' Return the bag of the words for an array of tweets'''
 	return np.array([np.mean([w2v[w] for w in words if w in w2v] or [np.zeros(dim)], axis=0 ) for words in X ])
 
 
@@ -58,17 +50,16 @@ def main():
   print('building the w2v...')
   #build bag of the word
   v, w = build_word_vector_matrix('../GloVe/res_full/vectors50.txt', 1000000000)
-  print(v.shape)
   w = np.array(w)
-  print(w.shape)
   w2v = dict(zip(w,v))
-  print(w2v['<user>'].shape) 
+
   print('Creating the bag of words...')
   bag_of_words = transform(w2v, 50, X)
-  #b = np.array(bag_of_words)
-
+  print('Bag of the words shape: ')
   print(bag_of_words.shape)
+
   print('Saving the data...')
+  np.save('./results_full/labels_training', y)
   np.save('./results_full/bagOfWord', bag_of_words)
 	
 if __name__ == '__main__':
