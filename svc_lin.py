@@ -4,11 +4,15 @@ import sklearn as sk
 #import gensim
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import cross_val_score
+from sklearn.feature_extraction.text import TfidfVectorizer
 import codecs
+import pickle
+from sklearn.externals import joblib
+from collections import Counter, defaultdict
 
 # train pos data
 def loadTrainData(fn, emotion):
@@ -17,8 +21,9 @@ def loadTrainData(fn, emotion):
     for line in infile:
       text = line.split()
       X.append(text)
+      y.append(emotion)
   X = np.array(X)
-  y = np.full(X.shape, emotion)
+  y = np.array(y)
   print(X.shape)
   return X, y
 
@@ -93,11 +98,11 @@ def models(w2v):
 
 def main():
   
-  X1, y1 = loadTrainData('twitter-datasets/train_pos_full.txt','1')
+  X1, y1 = loadTrainData('twitter-datasets/train_pos.txt','pos')
   #print(X1)
   #print(y1)
   
-  X2,y2 = loadTrainData('twitter-datasets/train_neg_full.txt','-1')
+  X2,y2 = loadTrainData('twitter-datasets/train_neg.txt','neg')
   #print(X2)
   #print(y2)
 
@@ -105,34 +110,41 @@ def main():
   y = np.concatenate((y1, y2), axis=0)
   #print(X,y)
 
-  w2v = build_word_vector_matrix('./GloVe/res_full/vectors50.txt', 1000000000)
+  w2v = build_word_vector_matrix('./GloVe/res/vectors.txt', 1000000000)
   
   #print(w2v)
 
   
   mult_nb = Pipeline([ ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("multinomial nb", MultinomialNB())])
   bern_nb = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("bernoli nb", BernoulliNB())])
-  svc = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("linear svc", SVC(kernel="linear"))])
+  svc = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), ("linear svc", LinearSVC())])
   #etree_w2v = Pipeline([
   #  ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
   #  ("extra trees", ExtraTreesClassifier(n_estimators=200))])
   
+  svc_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), ("linear svc", LinearSVC())])
 
   #etree_w2v_tfidf = Pipeline([
   #  ("word2vex vectorizer", TfidfEmbeddingVectorizer(w2v)),
   #  ("extra tress", ExtraTreesClassifier(n_estimators=200))])
   
-  svc.fit(X, y)
-  s1 = pickle.dumps(svc, 'svc.pkl')
+  #svc.fit(X, y)
+  #s1 = pickle.dumps(svc, 'svc_def.pkl')
   
-  mult_nb.fit(X, y)
-  s2 = pickle.dumps(mult_nb, 'mult_nb.pkl')
+  #mult_nb.fit(X, y)
+  #s2 = pickle.dumps(mult_nb, 'mult_nb.pkl')
 
-  bern_nb.fit(X, y)
-  s3 = pickle.dumps(bern_nb, 'bern_nb.pkl')
+  #bern_nb.fit(X, y)
+  #joblib.dump(svc, 'svc_nonlinear.pkl')
+  #from sklearn.externals import joblib
 
-  score = cross_val_score(svc, X, y, cv=5).mean()
-  print(score)
+  #score = cross_val_score(svc, X, y, cv=5)
+  #print(score)
+
+  svc_tfidf.fit(X, y)
+  joblib.dump(svc_tfidf, 'svc_linear_tfidf.pkl')
+  score2 = cross_val_score(svc_tfidf, X, y, cv=5)
+  print(score2)
 
 if __name__ == '__main__':
     main()
