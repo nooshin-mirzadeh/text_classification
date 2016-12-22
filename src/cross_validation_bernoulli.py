@@ -36,7 +36,7 @@ def getClassifier(clf_name):
 def main():
     ##name_clf = input('Classifier name')
     print('Load training data...')
-    X50 = np.load('./results_full/bagOfWord.npy')
+    X50 = np.load('./results_full/bagOfWord50.npy')
     X200 = np.load('./results_full/bagOfWord200.npy')
     X500 = np.load('./results_full/bagOfWord500.npy')
     y = np.load('./results_full/clean_labels_training.npy')
@@ -63,7 +63,7 @@ def main():
       print(name_clf, ' : ', score)
       scores.append((name_clf, score))	
 
-    np.save(np.array(scores))
+    np.save('cross_scores', np.array(scores))
     print('Final results: ')
     print(scores)
     #with open(("./results_full/"+name_clf+"Test.csv"), 'w') as f:
