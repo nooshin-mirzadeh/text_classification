@@ -52,12 +52,16 @@ def transform(w2v, dim, X):
 
 def main():
   #load pos and neg data
-  print('loading pos data...')
-  X1, y1 = loadTrainData('../twitter-datasets/train_pos_full.txt','1')
-  print('loading neg data...')
-  X2,y2 = loadTrainData('../twitter-datasets/train_neg_full.txt','-1')
-  X = np.concatenate((X1, X2), axis=0)
-  y = np.concatenate((y1, y2), axis=0)
+  #print('loading pos data...')
+  #X1, y1 = loadTrainData('../twitter-datasets/train_pos_full.txt','1')
+  #print('loading neg data...')
+  #X2,y2 = loadTrainData('../twitter-datasets/train_neg_full.txt','-1')
+  #X = np.concatenate((X1, X2), axis=0)
+  #y = np.concatenate((y1, y2), axis=0)
+
+  print('loading training data...')
+  X = np.load('./results_full/porter_training')
+  y = np.load('./results_full/clean_labels_training')
   print(X.shape)
   print(X[0])
 
@@ -66,25 +70,26 @@ def main():
 	
   print('building the w2v...')
   #build bag of the word
-  v, w = build_word_vector_matrix('../GloVe/res_full/vectors500.txt', 1000000000)
+  dim = input('choose vector dimension: 50, 200, 500\n')
+  v, w = build_word_vector_matrix(('./data/vectors'+dim+'.txt'), 1000000000)
   w = np.array(w)
   w2v = dict(zip(w,v))
 
   print('Creating the bag of words for training data...')
-  bag_of_words = transform(w2v, 500, X)
+  bag_of_words = transform(w2v, dim, X)
   print('Bag of the words shape: ')
   print(bag_of_words.shape)
 
   print('Creating the bag of words for test data...')
-  bag_of_words_t = transform(w2v, 500, Xt)
+  bag_of_words_t = transform(w2v, dim, Xt)
   print('Bag of the words shape: ')
   print(bag_of_words_t.shape)
 
   print('Saving the data...')
   np.save('./results_full/labels_training', y)
-  np.save('./results_full/bagOfWord500', bag_of_words)
+  np.save(('./results_full/bagOfWord'+dim), bag_of_words)
   np.save('./results_full/testID', tid)
-  np.save('./results_full/test500', bag_of_words_t)
+  np.save(('./results_full/test'+dim), bag_of_words_t)
 
 if __name__ == '__main__':
     main()
