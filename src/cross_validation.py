@@ -63,7 +63,7 @@ def main():
       print(name_clf, ' : ', score)
       scores.append((name_clf, score))	
 
-    np.save(np.array(scores))
+    np.save('scores', np.array(scores))
     print('Final results: ')
     print(scores)
     #with open(("./results_full/"+name_clf+"Test.csv"), 'w') as f:
