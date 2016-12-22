@@ -7,23 +7,20 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
 from sklearn.externals import joblib
 from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neural_network import MLPClassifier
+#from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 
-names = ["SVC15", "SVC50", "SVC", "RBFSVC", "LinearSVC",
+names = ["SVC5000", "SVC", "RBFSVC", "LinearSVC",
          "RandomForest", 
-         "NeuralNet",
          "GaussianBayes", "NaiveBayes", "BernoulliBayes"]
 
 
 classifiers = [
-    SVC(kernel="linear", C=0.025, max_iter=15),
-    SVC(kernel="linear", C=0.025, max_iter=50),
+    SVC(kernel="linear", C=0.025, max_iter=5000),
     SVC(kernel="linear", C=0.025),
     SVC(gamma=2, C=1),
     LinearSVC(),
     RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-    MLPClassifier(alpha=1),
     GaussianNB(),
     MultinomialNB(),
     BernoulliNB()]

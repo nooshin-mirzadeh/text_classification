@@ -31,9 +31,23 @@ def loadTrainData(fn, emotion):
   print(X.shape)
   return X, y
 
+def loadTestData(fn):
+	X, tid = [], []
+	with open(fn) as infile:
+		for line in infile:
+			i, sep, text = line.partition(',')
+			tid.append(i)
+			X.append(text.split())
+		X = np.array(X)
+		tid = np.array(tid)
+		print(X.shape)
+		return X, tid
+
+
 def transform(w2v, dim, X):
 	''' Return the bag of the words for an array of tweets'''
 	return np.array([np.mean([w2v[w] for w in words if w in w2v] or [np.zeros(dim)], axis=0 ) for words in X ])
+
 
 
 def main():
@@ -46,6 +60,9 @@ def main():
   y = np.concatenate((y1, y2), axis=0)
   print(X.shape)
   print(X[0])
+
+  print('loading test data...')
+  Xt,tid = loadTestData('../twitter-datasets/test_data.txt')
 	
   print('building the w2v...')
   #build bag of the word
@@ -53,14 +70,21 @@ def main():
   w = np.array(w)
   w2v = dict(zip(w,v))
 
-  print('Creating the bag of words...')
+  print('Creating the bag of words for training data...')
   bag_of_words = transform(w2v, 50, X)
   print('Bag of the words shape: ')
   print(bag_of_words.shape)
 
+  print('Creating the bag of words for test data...')
+  bag_of_words_t = transform(w2v, 50, Xt)
+  print('Bag of the words shape: ')
+  print(bag_of_words_t.shape)
+
   print('Saving the data...')
   np.save('./results_full/labels_training', y)
   np.save('./results_full/bagOfWord', bag_of_words)
-	
+  np.save('./results_full/testID.npy', tid)
+  np.save('./results_full/test.npy', bag_of_words_t)
+
 if __name__ == '__main__':
     main()
