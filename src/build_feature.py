@@ -66,25 +66,25 @@ def main():
 	
   print('building the w2v...')
   #build bag of the word
-  v, w = build_word_vector_matrix('../GloVe/res_full/vectors50.txt', 1000000000)
+  v, w = build_word_vector_matrix('../GloVe/res_full/vectors500.txt', 1000000000)
   w = np.array(w)
   w2v = dict(zip(w,v))
 
   print('Creating the bag of words for training data...')
-  bag_of_words = transform(w2v, 50, X)
+  bag_of_words = transform(w2v, 500, X)
   print('Bag of the words shape: ')
   print(bag_of_words.shape)
 
   print('Creating the bag of words for test data...')
-  bag_of_words_t = transform(w2v, 50, Xt)
+  bag_of_words_t = transform(w2v, 500, Xt)
   print('Bag of the words shape: ')
   print(bag_of_words_t.shape)
 
   print('Saving the data...')
   np.save('./results_full/labels_training', y)
-  np.save('./results_full/bagOfWord', bag_of_words)
-  np.save('./results_full/testID.npy', tid)
-  np.save('./results_full/test.npy', bag_of_words_t)
+  np.save('./results_full/bagOfWord500', bag_of_words)
+  np.save('./results_full/testID', tid)
+  np.save('./results_full/test500', bag_of_words_t)
 
 if __name__ == '__main__':
     main()
