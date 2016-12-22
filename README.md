@@ -19,6 +19,25 @@ cross validating  GaussianBayes
 GaussianBayes  :  0.6526616
 cross validating  BernoulliBayes
 BernoulliBayes  :  0.651312
+cross validating  RandomForest
+RandomForest  :  0.6887116
+cross validating  GaussianBayes
+GaussianBayes  :  0.6526616
+cross validating  BernoulliBayes
+BernoulliBayes  :  0.651312
+cross validating  LinearSVC200
+LinearSVC200  :  0.7983728
+cross validating  BernoulliBayes200
+BernoulliBayes200  :  0.6483528
+cross validating  LinearSVC500
+LinearSVC500  :  0.761866
+cross validating  RandomForest500
+RandomForest500  :  0.6757064
+cross validating  GaussianBayes500
+GaussianBayes500  :  0.6526616
+cross validating  BernoulliBayes500
+BernoulliBayes500  :  0.651312
+
 
 clean data:
 cross validating  RandomForest50
