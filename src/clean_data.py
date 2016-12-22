@@ -17,6 +17,17 @@ def loadTrainData(fn, emotion):
   print(X.shape)
   return X, y
 
+def loadTestData(fn):
+  X, tid = [], []
+  with open(fn) as infile:
+    for line in infile:
+      i, sep, text = line.partition(',')
+      tid.append(i)
+      X.append(text.split())
+    X = np.array(X)
+    tid = np.array(tid)
+    print(X.shape)
+    return X, tid
 
 def stemize(words, stemmer):
   lemma = WordNetLemmatizer()
@@ -33,6 +44,8 @@ def main():
   X = np.concatenate((X1, X2), axis=0)
   y = np.concatenate((y1, y2), axis=0)
   
+  Xt, tid = loadTestData('../twitter-datasets/test_data.txt')
+
   stops = set(stopwords.words("english"))
   stops.update(['<user>','<url>', '.'])
   print(stops)
@@ -41,9 +54,14 @@ def main():
   for tweet in X:
   	meaningful_tweet = [w for w in tweet if not w in stops]
   	meaningful_X.append(meaningful_tweet)
-
+  
+  meaningful_Xt = []
+  for tweet in Xt:
+    meaningful_tweet = [w for w in tweet if not w in stops]
+    meaningful_Xt.append(meaningful_tweet)
   #print(meaningful_X)
   meaningful_X = np.array(meaningful_X)
+  meaningful_Xt = np.array(meaningful_Xt)
 
   porter_X, lancaster_X = [],[]
   porter_stemmer = PorterStemmer()
@@ -55,6 +73,15 @@ def main():
   	lancaster_X.append(lancaster)
   	if i%1000 == 0:
   		print(i)
+
+  porter_Xt, lancaster_Xt = [],[]
+  for i, tweet in enumerate(meaningful_Xt):
+    porter = stemize(tweet, porter_stemmer)
+    lancaster = stemize(tweet, lancaster_stemmer)
+    porter_Xt.append(porter)
+    lancaster_Xt.append(lancaster)
+    if i%1000 == 0:
+      print(i)
   
   #print(porter_X)
   #print(lancaster_X)
@@ -63,6 +90,10 @@ def main():
   np.save('./results_full/clean_labels_training', y)
   np.save('./results_full/porter_training', np.array(porter_X))
   np.save('./results_full/lancaster_training', np.array(lancaster_X))
+
+  np.save('./results_full/clean_testID', tid)
+  np.save('./results_full/porter_test', np.array(porter_Xt))
+  np.save('./results_full/lancaster_test', np.array(lancaster_Xt))
 
   with open('./data/clean_porter_tweets.txt', 'w') as f:
     for w in porter_X:

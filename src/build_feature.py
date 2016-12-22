@@ -66,8 +66,10 @@ def main():
   print(X[0])
 
   print('loading test data...')
-  Xt,tid = loadTestData('../twitter-datasets/test_data.txt')
-	
+  #Xt,tid = loadTestData('../twitter-datasets/test_data.txt')
+	Xt = np.load('./results_full/porter_test.npy')
+  tid = np.load('./results_full/clean_testID.npy')
+
   print('building the w2v...')
   #build bag of the word
   dim = input('choose vector dimension: 50, 200, 500\n')
