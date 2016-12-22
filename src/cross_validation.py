@@ -9,6 +9,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import RandomForestClassifier
 #from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
+from sklearn.cross_validation import cross_val_score
 import pandas as pd
 
 
