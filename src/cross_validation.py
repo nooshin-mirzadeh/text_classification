@@ -13,8 +13,8 @@ from sklearn.cross_validation import cross_val_score
 import pandas as pd
 
 
-clf50 = ["SVC5000", "LinearSVC", "LinearSVC500"
-         "RandomForest",
+#clf50 = ["SVC5000", "LinearSVC",
+clf50 = ["RandomForest",
          "GaussianBayes", "BernoulliBayes"]
 clf200 = ["LinearSVC200", "BernoulliBayes200"]
 clf500 = ["LinearSVC500", "RandomForest500", "GaussianBayes500", "BernoulliBayes500"]

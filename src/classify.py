@@ -32,12 +32,12 @@ def getClassifier(clf_name):
 
 def main():
     name_clf = input('Classifier name')
-    X = np.load('./results_full/bagOfWord.npy')
+    X = np.load('./results_full/bagOfWord500.npy')
     y = np.load('./results_full/labels_training.npy')
 
     clf = getClassifier(name_clf)
     clf.fit(X,y)
-    joblib.dump(clf, name_clf)
+    joblib.dump(clf, (name_clf+'500'))
 
 if __name__ == '__main__':
     main()

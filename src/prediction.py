@@ -33,7 +33,7 @@ def getClassifier(clf_name):
 
 def main():
     name_clf = input('Classifier name')
-    X = np.load('./results_full/test.npy')
+    X = np.load('./results_full/test500.npy')
     tid = np.load('./results_full/testID.npy')
 
     clf = joblib.load(name_clf)
