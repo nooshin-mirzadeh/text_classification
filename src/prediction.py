@@ -33,7 +33,7 @@ def main():
     out = np.column_stack((tid,np.array(y)))
     print(out.shape)
     out_df = pd.DataFrame(out, columns = ['Id', 'Prediction'])
-    out_df.to_csv("./results_full/"+name_clf+"Test.csv", index=False)
+    out_df.to_csv("./results_full/"+name_clf+dim+"CleanTest.csv", index=False)
     #with open(("./results_full/"+name_clf+"Test.csv"), 'w') as f:
     #  np.savetxt(f, out, delimiter=',', fmt="%s")
     print('done')
