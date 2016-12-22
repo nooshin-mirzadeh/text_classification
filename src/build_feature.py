@@ -60,8 +60,8 @@ def main():
   #y = np.concatenate((y1, y2), axis=0)
 
   print('loading training data...')
-  X = np.load('./results_full/porter_training')
-  y = np.load('./results_full/clean_labels_training')
+  X = np.load('./results_full/porter_training.npy')
+  y = np.load('./results_full/clean_labels_training.npy')
   print(X.shape)
   print(X[0])
 
@@ -76,12 +76,12 @@ def main():
   w2v = dict(zip(w,v))
 
   print('Creating the bag of words for training data...')
-  bag_of_words = transform(w2v, dim, X)
+  bag_of_words = transform(w2v, int(dim), X)
   print('Bag of the words shape: ')
   print(bag_of_words.shape)
 
   print('Creating the bag of words for test data...')
-  bag_of_words_t = transform(w2v, dim, Xt)
+  bag_of_words_t = transform(w2v, int(dim), Xt)
   print('Bag of the words shape: ')
   print(bag_of_words_t.shape)
 
