@@ -34,28 +34,30 @@ def getClassifier(clf_name):
 
 def main():
     ##name_clf = input('Classifier name')
+    print('Load training data...')
     X50 = np.load('./results_full/bagOfWord.npy')
     X200 = np.load('./results_full/bagOfWord200.npy')
     X500 = np.load('./results_full/bagOfWord500.npy')
     y = np.load('./results_full/labels_training.npy')
     
-    scores = [(name, cross_val_score(model, X, y, cv=5).mean()) 
-                     for name, model in all_models]
     scores = []
     for name_clf in clf50:
       clf = joblib.load(name_clf)
+      print('cross validating ', name_clf)
       score = cross_val_score(clf, X50, y, cv=5).mean()
       print(name_clf, ' : ', score)
       scores.append((name_clf, score))
 
     for name_clf in clf200:
       clf = joblib.load(name_clf)
+      print('cross validating ', name_clf)
       score = cross_val_score(clf, X200, y, cv=5).mean()
       print(name_clf, ' : ', score)
       scores.append((name_clf, score))
 
     for name_clf in clf500:
       clf = joblib.load(name_clf)
+      print('cross validating ', name_clf)
       score = cross_val_score(clf, X50, y, cv=5).mean()
       print(name_clf, ' : ', score)
       scores.append((name_clf, score))	
